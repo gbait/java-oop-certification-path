@@ -90,3 +90,102 @@ public Server(String name) { }               // overloaded constructor
 - **Default constructor disappears** — Oracle tests this directly
 - **`this`** is required when parameter and attribute share the same name
 - **Overloading** — same name, different parameters. Same name, same parameters → compilation error
+
+## Encapsulation
+ 
+### The three steps of encapsulation
+1. Make attributes `private`
+2. Create getters to read them
+3. Create setters to modify them with validation
+ 
+### Getter rules
+- No parameters
+- Returns the same type as the attribute
+- Naming: `get` + AttributeName (uppercase first letter)
+- Boolean exception: `is` + AttributeName instead of `get`
+ 
+```java
+public String getName() { return name; }       // String getter
+public boolean isOnline() { return isOnline; } // boolean getter — is not get
+```
+ 
+### Setter rules
+- Receives the new value as parameter
+- Always returns `void`
+- Naming: `set` + AttributeName (uppercase first letter)
+ 
+```java
+public void setTotalBandwidth(int totalBandwidth) {
+    if (totalBandwidth >= 0) {
+        this.totalBandwidth = totalBandwidth;
+    } else {
+        System.out.println("ERROR: Bandwidth cannot be negative");
+    }
+}
+```
+ 
+### Getter and setter naming convention
+| Attribute | Getter | Setter |
+|---|---|---|
+| `String name` | `getName()` | `setName()` |
+| `int totalBandwidth` | `getTotalBandwidth()` | `setTotalBandwidth()` |
+| `boolean isOnline` | `isOnline()` | `setOnline()` |
+ 
+### Key encapsulation exam traps
+- **`private`** — private attributes give compilation error if accessed directly from outside
+- **Boolean getter** — `isOnline()` not `getIsOnline()`. Oracle puts both and expects the correct one
+- **Getter with parameters** — not a valid getter
+- **Setter that returns something** — not a valid setter
+- **Encapsulation is not just `private`** — must include getters and setters to be complete
+ 
+---
+ 
+## Inheritance
+ 
+### Key vocabulary
+| Term | Meaning |
+|---|---|
+| Parent class | The class being inherited from |
+| Child class | The class that inherits |
+| `extends` | Keyword that establishes inheritance |
+| `super()` | Calls the parent constructor |
+| `@Override` | Marks a method that overrides a parent method |
+ 
+### Establishing inheritance
+```java
+public class Server extends NetworkDevice { // Server inherits from NetworkDevice
+```
+Java only allows inheriting from **one class** — multiple inheritance does not exist.
+ 
+### Calling the parent constructor
+```java
+public Server(String name, String ipAddress, boolean isOnline, int bandwidth) {
+    super(name, ipAddress, isOnline); // MUST be the first line
+    this.totalBandwidth = bandwidth;
+}
+```
+ 
+### Overriding a parent method
+```java
+@Override
+public void printReport() {
+    super.printReport(); // calls parent method first
+    System.out.println("Bandwidth: " + totalBandwidth); // adds child-specific info
+}
+```
+ 
+### What the child inherits
+| | Inherited? |
+|---|---|
+| `public` attributes | Yes |
+| `protected` attributes | Yes |
+| `private` attributes | No — only via getters/setters |
+| `public` methods | Yes |
+| Parent constructor | No — must call with `super()` |
+ 
+### Key inheritance exam traps
+- **`extends A, B`** — multiple inheritance does not exist in Java. Compilation error
+- **`super()` must be first line** — if not first Java throws an error
+- **`@Override` wrong signature** — if method does not exist in parent with same signature, compilation error
+- **`private` attributes of parent** — not directly accessible in child, only via getters
+- **Parent constructor not inherited** — must call explicitly with `super()`
