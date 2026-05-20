@@ -189,3 +189,67 @@ public void printReport() {
 - **`@Override` wrong signature** — if method does not exist in parent with same signature, compilation error
 - **`private` attributes of parent** — not directly accessible in child, only via getters
 - **Parent constructor not inherited** — must call explicitly with `super()`
+
+---
+ 
+## Polymorphism
+ 
+### What is polymorphism
+A parent type variable can contain a child type object. Java always executes the overridden method of the real object, not the variable type.
+ 
+> The type of the variable decides what methods you can call.
+> The type of the object decides how they execute.
+ 
+### Polymorphic variable
+```java
+NetworkDevice device = new Server("WebServer-01", "192.168.1.10", true, 1000, 850);
+// variable type = NetworkDevice
+// real object   = Server
+device.printReport(); // executes Server.printReport(), not NetworkDevice.printReport()
+```
+ 
+### Polymorphic array
+```java
+NetworkDevice[] network = {
+    new Server(...),  // Server stored as NetworkDevice
+    new Router(...),  // Router stored as NetworkDevice
+    new Server(...)   // Server stored as NetworkDevice
+};
+```
+ 
+### Dynamic dispatch
+Java decides which method version to execute at runtime based on the real object type:
+```java
+for (NetworkDevice device : network) {
+    device.printReport(); // Server → Server version, Router → Router version
+}
+```
+ 
+### For-each loop
+```java
+for (NetworkDevice device : network) {
+    // device takes each element one by one
+}
+```
+Read as: "for each device of type NetworkDevice in network".
+ 
+### `instanceof`
+```java
+if (device instanceof Server) { }  // true if device is a Server or child of Server
+if (device instanceof NetworkDevice) { } // also true for Server and Router
+```
+ 
+### Casting
+```java
+NetworkDevice nd = new Server(...);
+Server s = (Server) nd;       // cast to access Server-specific methods
+s.calculateUsage();            // now accessible
+```
+ 
+### Key polymorphism exam traps
+- **Dynamic dispatch** — Java always runs the real object's overridden method, never the variable type's
+- **`instanceof` returns true for parents** — `server instanceof NetworkDevice` is `true`
+- **Wrong cast throws `ClassCastException`** — at runtime, not compilation. `(Server) router` compiles but crashes
+- **For-each missing variable** — `for (NetworkDevice : network)` is wrong. Must be `for (NetworkDevice device : network)`
+- **Parent variable cannot call child-specific methods** — must cast first
+- **No override = parent method executes** — polymorphism only applies to overridden methods
